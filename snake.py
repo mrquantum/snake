@@ -55,13 +55,9 @@ def redrawwindow(win):
 	
 	j=0
 	color=(255,0,0)
-	for block in snake:
-		if j==len(snake)-1:
-			color=(0,0,255)
-		j+=1
-		block.draw(win,color)
-		#~ print j
-		#~ print j,',',block.x,',',block.y
+	for blocki in snake:
+		blocki.draw(win,color)
+
 	food.draw(win)
 	text =font.render('Score: ' + str(score), 1, (0,0,255))
 	win.blit(text, (390, 10))
@@ -109,14 +105,13 @@ def crawl():
 
 
 block1=snakeblock(100,100,10)
-food=eatblock(400,400,10)
+food=eatblock(100,300,10)
 #~ snake=[block(100,100,10)]
 
 velx=20
 vely=20
 
-snake=[snakeblock(100,100,10),snakeblock(80,100,10)]
-
+snake=[snakeblock(100,100,10),snakeblock(100,80,10),snakeblock(100,60,10),snakeblock(100,40,10)]
 
 while run:
 	for event in pygame.event.get():
@@ -124,43 +119,31 @@ while run:
 			run=False
 	clock.tick(10)
 	keys=pygame.key.get_pressed()
-	crawl()
 
-	head=snake[0]
 	#~ print len(snake)
-	if head.hitbox[1] < food.hitbox[1] + food.hitbox[3] and head.hitbox[1] + head.hitbox[3] > food.hitbox[1]:
-		if head.hitbox[0] + head.hitbox[2] > food.hitbox[0] and head.hitbox[0] < food.hitbox[0] + food.hitbox[2]:
+	if snake[0].hitbox[1] < food.hitbox[1] + food.hitbox[3] and snake[0].hitbox[1] + snake[0].hitbox[3] > food.hitbox[1]:
+		if snake[0].hitbox[0] + snake[0].hitbox[2] > food.hitbox[0] and snake[0].hitbox[0] < food.hitbox[0] + food.hitbox[2]:
 			score += 1
-			tail=snake[len(snake)-1]
-			dx=0
-			dy=0
-	
-			if tail.velx>0:
+			
+			
+			
+			if snake[len(snake)-1].velx>0:
 				dx=-20
-			if tail.velx<0:
+			if snake[len(snake)-1].velx<0:
 				dx=+20
-			if tail.vely>0:
+			if snake[len(snake)-1].vely>0:
 				dy=-20
-			if tail.vely<0: 
+			if snake[len(snake)-1].vely<0: 
 				dy=20
-			print tail.x,',',tail.y
 			#~ newtail=snakeblock(tail.x+dx,tail.y+dy,10)
-			newtail=snakeblock(20,20,10)
-			print newtail.x,',',newtail.y
-			snake.append(newtail)
-			print len(snake)
-	
+			
+			snake.append(snakeblock(20,20,10))
+			
+
+
+
+	crawl()
 	redrawwindow(win)
-
-
-
-
-
-
-
-
-	
-
 		
 
 
