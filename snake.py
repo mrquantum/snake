@@ -14,7 +14,6 @@ vel=20
 velx=20
 vely=20
 
-
 class snakeblock(object):
 	def __init__(self,x,y,radius):
 		self.x=x
@@ -34,18 +33,43 @@ class snakeblock(object):
 	
 	def teleport(self):
 		#teleports the block to a random pos
-		self.x=randint(1,screensize//vel-1)*vel
+		self.x=randint(2,screensize//vel-2)*vel
 		self.hitbox[0]=food.x
-		self.y=randint(1,screensize//vel-1)*vel
+		self.y=randint(2,screensize//vel-2)*vel
 		self.hitbox[1]=food.y
 	
 	
 	
-	def drawblock(self,win,color,rect=False,hitbox=True):
-		if rect:
+	def drawblock(self,win,color,shape='circle',hitbox=False):
+	
+		if shape=='polygon':
+			noangle=6
+			points=[]
+			for i in range(0,noangle):
+				points.append((self.x+self.radius*np.cos(2*np.pi*i/noangle),self.y+self.radius*np.sin(2*np.pi*i/noangle)))
+			pygame.draw.polygon(win, (255,0,0),tuple(points))
+		#~ print points
+		elif shape=='rect':
 			pygame.draw.rect(win,color,(self.x-self.radius,self.y-self.radius,2*self.radius,2*self.radius),0)
-		else:
+		elif shape=='circle':
 			pygame.draw.circle(win,color,(self.x,self.y),self.radius,0)
+		elif shape=='triangle':
+			offset=0
+			if self.vely>0:
+				offset=-np.pi/2
+			elif self.vely<0:
+				offset=np.pi/2
+			elif self.velx<0:
+				offset=0
+			elif self.velx>0:
+				offset=np.pi
+			else:
+				offset=0
+			noangle=3
+			points=[]
+			for i in range(0,noangle):
+				points.append((self.x+self.radius*np.cos(2*np.pi*i/noangle+offset),self.y+self.radius*np.sin(2*np.pi*i/noangle+offset)))
+			pygame.draw.polygon(win, (255,0,0),tuple(points))
 		
 		if hitbox:
 			pygame.draw.rect(win,(0,255,0),(self.x-self.radius,self.y-self.radius,2*self.radius,2*self.radius),1)
@@ -115,15 +139,21 @@ class snake(snakeblock):
 		self.Snake[len(self.Snake)-1].hitbox[2]=8
 		self.Snake[len(self.Snake)-1].hitbox[3]=8
 	def reset(self):
-		#~ newsnake=[self.Snake[0]]
 		self.Snake=[]
 		self.Snake.append(snakeblock(self.initx,self.inity,10))
 	
 	def draw(self,win):
 		color=(255,0,0)
-		for block in self.Snake:
-			block.drawblock(win,color)
-
+		self.Snake[0].drawblock(win,color,shape='polygon')
+		
+		if len(self.Snake)>2:
+			for i in range(1,len(self.Snake)-1):
+				block=self.Snake[i]
+				block.drawblock(win,color)
+		if len(self.Snake)>1:
+			block=self.Snake[len(self.Snake)-1]
+			block.drawblock(win,color,shape='triangle')
+			
 class obstacle(snakeblock):
 	
 	def __init__(self,snakeblock):
@@ -133,7 +163,7 @@ class obstacle(snakeblock):
 		
 	def draw(self,win,rect=True):
 		for block in self.wall:
-			block.drawblock(win,self.color,rect,False)
+			block.drawblock(win,self.color,shape='rect')
 			
 		
 		
@@ -147,6 +177,7 @@ def redrawwindow(win):
 	food.drawblock(win,(255,255,0))
 	text =font.render('Score: ' + str(score), 1, (255,0,255))
 	win.blit(text, (370, 30))
+
 	pygame.display.update()
 
 
@@ -160,7 +191,6 @@ for xy in range(0,520,20):
 	Wall.wall.append(snakeblock(0,xy,20))
 	Wall.wall.append(snakeblock(xy,screensize,20))
 	Wall.wall.append(snakeblock(screensize,xy,20))
-	#~ Wall.wall.append(snakeblock(xy,size,20))
 
 
 run=True
@@ -218,12 +248,6 @@ while run:
 	redrawwindow(win)
 
 	
-
-
-
-	#~ print len(snake)
-
-			#~ redrawwindow(win)
 
 
 
