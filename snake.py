@@ -87,16 +87,16 @@ class snake(snakeblock):
 		
 	def getdirection(self):
 		keys=pygame.key.get_pressed()
-		if keys[pygame.K_LEFT]:
+		if keys[pygame.K_LEFT] and self.Snake[0].velx!=20:
 			self.Snake[0].velx=-20
 			self.Snake[0].vely=0
-		elif keys[pygame.K_RIGHT]:
+		elif keys[pygame.K_RIGHT] and self.Snake[0].velx!=-20:
 			self.Snake[0].velx=20
 			self.Snake[0].vely=0
-		elif keys[pygame.K_UP]:
+		elif keys[pygame.K_UP] and self.Snake[0].vely!=20:
 			self.Snake[0].velx=0
 			self.Snake[0].vely=-20
-		elif keys[pygame.K_DOWN]:
+		elif keys[pygame.K_DOWN] and self.Snake[0].vely!=-20:
 			self.Snake[0].velx=0
 			self.Snake[0].vely=20
 	
@@ -259,4 +259,3 @@ pygame.quit()
 		
 	
 	
-
